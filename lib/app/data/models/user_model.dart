@@ -7,6 +7,7 @@ class UserModel {
     this.email,
     this.role,
     this.profileImage,
+    this.isBlocked,
     this.createdAt,
   });
 
@@ -16,6 +17,7 @@ class UserModel {
   final String? phoneNumber;
   final String? email;
   final String? role;
+  final bool? isBlocked;
   final DateTime? createdAt;
   final Map<String, dynamic>? profileImage;
 
@@ -28,6 +30,7 @@ class UserModel {
       email: json['email'],
       role: json['role'] ?? "user",
       profileImage: json['profileImage'],
+      isBlocked: json['isBlocked'],
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
           : DateTime.now(),
@@ -43,6 +46,7 @@ class UserModel {
       'email': email,
       'role': role,
       "profileImage": profileImage,
+      "isBlocked": isBlocked,
       'createdAt': createdAt?.toIso8601String(),
     };
   }

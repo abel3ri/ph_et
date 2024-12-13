@@ -43,12 +43,13 @@ class RItemCard extends StatelessWidget {
               ),
               child: CachedNetworkImage(
                 fit: BoxFit.cover,
+                width: Get.width,
                 imageUrl: imageUrl,
                 placeholder: (context, url) => Container(
                   color: Colors.grey[300],
                   height: 96,
                   width: double.infinity,
-                  child: Center(
+                  child: const Center(
                     child: RLoading(),
                   ),
                 ),

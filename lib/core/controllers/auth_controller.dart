@@ -59,6 +59,12 @@ class AuthController extends GetxController {
       } else {
         if (phoneQuerySnapShot.docs.isEmpty) {
           return left(ErrorModel(body: "Phone number is not registered."));
+        } else {
+          if (phoneQuerySnapShot.docs.first.data()['isBlocked'] == true) {
+            return left(
+              ErrorModel(body: "Unable to login. Please try again later."),
+            );
+          }
         }
       }
 
@@ -262,6 +268,11 @@ class AuthController extends GetxController {
         password: userData['password'],
       );
       final res = await db.collection("users").doc(credential.user!.uid).get();
+      if (res.data()?['isBlocked'] == true) {
+        return left(
+          ErrorModel(body: "Unable to login. Please try again later."),
+        );
+      }
       currentUser.value = UserModel.fromJson(res.data()!);
       await saveUserData(currentUser.value!.toJson());
 
@@ -312,10 +323,11 @@ class AuthController extends GetxController {
       currentUser.value = null;
 
       return right(SuccessModel(body: "Account deleted successfully!"));
-    } catch (e) {
+    } catch (e, stackTrace) {
       return left(
         ErrorModel(
-          body: "Account could not be deleted!. Please try again later.",
+          body: "Account could not be deleted! Please try again later.",
+          stackTrace: stackTrace,
         ),
       );
     }
@@ -325,12 +337,10 @@ class AuthController extends GetxController {
     try {
       prefs ??= await SharedPreferences.getInstance();
       for (var entry in userData.entries) {
-        if (entry.value != null) {
-          if (entry.key == "profileImage") {
-            prefs!.setString(entry.key, jsonEncode(entry.value));
-          } else {
-            prefs!.setString(entry.key, entry.value);
-          }
+        if (entry.key == "profileImage") {
+          prefs!.setString(entry.key, jsonEncode(entry.value));
+        } else {
+          prefs!.setString(entry.key, entry.value.toString());
         }
       }
     } catch (e) {
@@ -347,6 +357,7 @@ class AuthController extends GetxController {
         'lastName': prefs?.getString('lastName') ?? '',
         'email': prefs?.getString('email') ?? '',
         'role': prefs?.getString('role') ?? 'user',
+        "isBlocked": bool.tryParse(prefs?.getString("isBlocked") ?? ""),
         'createdAt': prefs?.getString('createdAt') ?? '',
         "profileImage": jsonDecode(prefs?.getString("profileImage") ?? ""),
         'phoneNumber': prefs?.getString('phoneNumber') ?? '',
@@ -367,6 +378,7 @@ class AuthController extends GetxController {
         prefs!.remove("email"),
         prefs!.remove("userId"),
         prefs!.remove("phoneNumber"),
+        prefs!.remove("isBlocked"),
         prefs!.remove("createdAt"),
         prefs!.remove("profileImage"),
         prefs!.remove("role"),

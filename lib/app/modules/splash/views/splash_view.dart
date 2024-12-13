@@ -22,7 +22,7 @@ class SplashView extends GetView<SplashController> {
             Get.offNamed("/get-started");
           });
         }
-        return Center(
+        return const Center(
           child: RLoading(),
         );
       }),
