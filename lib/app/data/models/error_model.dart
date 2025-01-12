@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,7 +11,6 @@ class ErrorModel {
   final StackTrace? stackTrace;
 
   void showError() {
-    log(body, stackTrace: stackTrace);
     Get.closeAllSnackbars();
     Get.showSnackbar(
       GetSnackBar(

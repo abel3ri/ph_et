@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:pharma_et/app/data/models/category_model.dart';
 import 'package:pharma_et/app/data/models/sub_Category_model.dart';
 import 'package:pharma_et/app/data/services/sub_category_service.dart';
+import 'package:pharma_et/app/modules/home/controllers/home_controller.dart';
 
 class CategoryController extends GetxController {
   final scrollController = ScrollController();
@@ -19,6 +20,7 @@ class CategoryController extends GetxController {
 
   CategoryModel? selectedCategory;
   late SubCategoryService subCategoryService;
+  late HomeController homeController;
   StreamSubscription? subCategorySubscription;
 
   @override
@@ -30,6 +32,7 @@ class CategoryController extends GetxController {
     searchController.addListener(_onSearchChanged);
     selectedCategory = Get.arguments?['category'];
     subCategoryService = Get.find<SubCategoryService>();
+    homeController = Get.find<HomeController>();
 
     if (selectedCategory != null) {
       watchSubCategories();
@@ -62,18 +65,9 @@ class CategoryController extends GetxController {
         (r) async {
           subCategories.value = r;
           filteredSubCategories.value = r;
-          await _fetchProductCounts();
         },
       );
     });
-  }
-
-  Future<void> _fetchProductCounts() async {
-    for (final subCategory in subCategories.value) {
-      final count = await subCategoryService
-          .countProductsInSubCategory(subCategory.subCategoryId!);
-      subCategoryProductCounts[subCategory.subCategoryId!] = count;
-    }
   }
 
   @override

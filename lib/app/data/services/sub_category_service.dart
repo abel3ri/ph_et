@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:pharma_et/app/data/models/error_model.dart';
 import 'package:pharma_et/app/data/models/sub_Category_model.dart';
-import 'package:pharma_et/app/data/services/BaseService.dart';
+import 'package:pharma_et/app/data/services/base_service.dart';
 
 class SubCategoryService extends BaseService<SubCategoryModel> {
   @override

@@ -18,6 +18,7 @@ class SearchView extends GetView<SearchController> {
     final cartController = Get.find<CartController>();
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: TextField(
           controller: controller.searchController,
           onChanged: controller.searchProducts,
@@ -60,7 +61,7 @@ class SearchView extends GetView<SearchController> {
           children: [
             Obx(() {
               if (controller.isLoading.value) {
-                return Center(child: RLoading());
+                return const Center(child: RLoading());
               }
 
               if (controller.searchController.text.isEmpty &&
@@ -91,7 +92,7 @@ class SearchView extends GetView<SearchController> {
                 itemBuilder: (context, index) {
                   final product = controller.searchResults[index];
                   return RItemCard(
-                    imageUrl: product.imageUrl?['url'],
+                    imageUrl: product.images?.first['url'],
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [

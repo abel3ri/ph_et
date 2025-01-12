@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:pharma_et/app/data/models/product_item_model.dart';
 import 'package:pharma_et/app/data/models/sub_Category_model.dart';
 import 'package:pharma_et/app/data/services/product_item_service.dart';
+import 'package:pharma_et/app/modules/cart/controllers/cart_controller.dart';
+import 'package:pharma_et/app/modules/home/controllers/home_controller.dart';
 
 class SubCategoryController extends GetxController {
   Rx<List<ProductItemModel>> products = Rx<List<ProductItemModel>>([]);
@@ -13,6 +15,8 @@ class SubCategoryController extends GetxController {
 
   SubCategoryModel? selectedSubCategory;
   late ProductItemService productItemService;
+  late CartController cartController;
+  late HomeController homeController;
   StreamSubscription? productSubscription;
 
   final searchController = TextEditingController();
@@ -22,8 +26,9 @@ class SubCategoryController extends GetxController {
     super.onInit();
 
     selectedSubCategory = Get.arguments?['subCategory'];
-
     productItemService = Get.find<ProductItemService>();
+    cartController = Get.find<CartController>();
+    homeController = Get.find<HomeController>();
 
     if (selectedSubCategory != null) {
       watchProducts();

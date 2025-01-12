@@ -36,26 +36,28 @@ class RItemCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
-              child: CachedNetworkImage(
-                fit: BoxFit.cover,
-                width: Get.width,
-                imageUrl: imageUrl,
-                placeholder: (context, url) => Container(
-                  color: Colors.grey[300],
-                  height: 96,
-                  width: double.infinity,
-                  child: const Center(
-                    child: RLoading(),
-                  ),
+            SizedBox(
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
                 ),
-                errorWidget: (context, url, error) => Image.asset(
-                  "assets/misc/placeholder.jpg",
-                  fit: BoxFit.cover,
+                child: CachedNetworkImage(
+                  fit: BoxFit.contain,
+                  width: Get.width,
+                  imageUrl: imageUrl,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[300],
+                    height: 96,
+                    width: double.infinity,
+                    child: const Center(
+                      child: RLoading(),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Image.asset(
+                    "assets/misc/placeholder.jpg",
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),

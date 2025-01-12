@@ -5,6 +5,7 @@ import 'package:pharma_et/app/modules/cart/controllers/cart_controller.dart';
 import 'package:pharma_et/app/modules/cart/views/cart_view.dart';
 import 'package:pharma_et/app/modules/home/views/home_view.dart';
 import 'package:pharma_et/app/modules/home_wrapper/widgets/r_navigation_destination.dart';
+import 'package:pharma_et/app/modules/order/views/order_view.dart';
 import 'package:pharma_et/app/modules/profile/views/profile_view.dart';
 import 'package:pharma_et/app/modules/search/views/search_view.dart';
 
@@ -23,6 +24,7 @@ class HomeWrapperView extends GetView<HomeWrapperController> {
             HomeView(),
             SearchView(),
             CartView(),
+            OrderView(),
             ProfileView(),
           ],
         ),
@@ -81,7 +83,8 @@ class HomeWrapperView extends GetView<HomeWrapperController> {
                                 cartController.cartItems.value.length;
                             return cartItemCount > 0
                                 ? CircleAvatar(
-                                    backgroundColor: Colors.white,
+                                    backgroundColor:
+                                        Get.theme.colorScheme.error,
                                     radius: cartItemCount > 9 ? 10 : 8,
                                     child: Text(
                                       cartItemCount > 9
@@ -89,7 +92,7 @@ class HomeWrapperView extends GetView<HomeWrapperController> {
                                           : "$cartItemCount",
                                       style:
                                           context.textTheme.bodySmall!.copyWith(
-                                        color: Get.theme.primaryColor,
+                                        color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                         fontSize: cartItemCount > 9 ? 10 : 12,
                                       ),
@@ -100,6 +103,11 @@ class HomeWrapperView extends GetView<HomeWrapperController> {
                         ),
                       ),
                     ],
+                  ),
+                  const RNavigationDestination(
+                    iconPath: "assets/dev-icons/order.svg",
+                    label: "Order",
+                    selectedIconPath: "assets/dev-icons/order-fill.svg",
                   ),
                   const RNavigationDestination(
                     iconPath: "assets/dev-icons/user.svg",

@@ -26,6 +26,12 @@ abstract class Routes {
   static const CHANGE_LANGUAGE = _Paths.CHANGE_LANGUAGE;
   static const EDIT_PROFILE = _Paths.EDIT_PROFILE;
   static const IMAGE_PREVIEW = _Paths.IMAGE_PREVIEW;
+  static const PRODUCT_DETAILS = _Paths.PRODUCT_DETAILS;
+  static const CONSULTATION = _Paths.CONSULTATION;
+  static const ORDER_HISTORY = _Paths.ORDER_HISTORY;
+  static const ORDER = _Paths.ORDER;
+  static const CHECKOUT = _Paths.CHECKOUT;
+  static const REVIEW_FORM = _Paths.REVIEW_FORM;
 }
 
 abstract class _Paths {
@@ -53,4 +59,10 @@ abstract class _Paths {
   static const CHANGE_LANGUAGE = '/change-language';
   static const EDIT_PROFILE = '/edit-profile';
   static const IMAGE_PREVIEW = '/image-preview';
+  static const PRODUCT_DETAILS = '/product-details';
+  static const CONSULTATION = '/consultation';
+  static const ORDER_HISTORY = '/order-history';
+  static const ORDER = '/order';
+  static const CHECKOUT = '/checkout';
+  static const REVIEW_FORM = '/review-form';
 }

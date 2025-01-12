@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -54,8 +53,6 @@ class EditProfileController extends GetxController {
         imageUploadRes.fold(
           (l) => l.showError(),
           (uploadedImage) async {
-            log('NEW UPLOADED -  ${uploadedImage.toString()}');
-
             final existingImage =
                 authController.currentUser.value?.profileImage;
 
@@ -89,15 +86,11 @@ class EditProfileController extends GetxController {
           },
         );
 
-        res.fold(
-          (l) => l.showError(),
-          (_) => log("User updated successfully."),
-        );
+        res.fold((l) => l.showError(), (r) {});
       }
 
       await Get.find<ProfileController>().getUserData();
     } catch (e) {
-      log("Error in updateUser: $e");
     } finally {
       isLoading(false);
     }

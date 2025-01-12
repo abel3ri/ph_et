@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:pharma_et/app/data/models/error_model.dart';
@@ -253,10 +252,7 @@ class AuthController extends GetxController {
         throw Exception("No authenticated user found to link email.");
       }
       await user.linkWithCredential(emailCredential);
-      log("Email provider linked successfully.");
-    } catch (e) {
-      log("Failed to link email log: $e");
-    }
+    } catch (e) {}
   }
 
   Future<Either<ErrorModel, SuccessModel>> loginWithEmailAndPass({
@@ -363,8 +359,7 @@ class AuthController extends GetxController {
         'phoneNumber': prefs?.getString('phoneNumber') ?? '',
       };
       currentUser.value = UserModel.fromJson(userData);
-    } catch (e, stackTrace) {
-      log(e.toString(), stackTrace: stackTrace);
+    } catch (e) {
       currentUser.value = null;
     }
   }

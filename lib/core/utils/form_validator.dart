@@ -12,11 +12,12 @@ class FormValidator {
   }
 
   static String? phoneNumberValidator(String? value) {
+    final phoneExp = RegExp(r'^(^\+251|^251|^0)?(9|7)\d{8}$');
     if ((value == null || value.isEmpty)) {
       return "Please provide a phone number";
     }
-    if (!value.isPhoneNumber) {
-      return "Please provide valid phone number";
+    if (!phoneExp.hasMatch(value)) {
+      return "Please provide a valid phone number";
     }
     return null;
   }
@@ -45,10 +46,11 @@ class FormValidator {
   }
 
   static String? emailOrPhoneValidator(String? value) {
+    final phoneExp = RegExp(r'^(^\+251|^251|^0)?(9|7)\d{8}$');
     if ((value == null || value.isEmpty)) {
       return "Please provide an email address or phone number";
     }
-    if (!value.isEmail && !value.isPhoneNumber) {
+    if (!value.isEmail && !phoneExp.hasMatch(value)) {
       return "Please provide a valid email or phone number";
     }
     return null;
@@ -61,6 +63,20 @@ class FormValidator {
     if (!value.isAlphabetOnly) {
       return "Please provide a valid name";
     }
+    return null;
+  }
+
+  static String? fullNameValidator(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Please provide a full name";
+    }
+
+    final nameRegExp = RegExp(r'^[a-zA-Z\s]+$');
+
+    if (!nameRegExp.hasMatch(value)) {
+      return "Please provide a valid name (alphabets and spaces only)";
+    }
+
     return null;
   }
 }

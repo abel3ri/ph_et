@@ -22,6 +22,38 @@ class UserService {
     }
   }
 
+  Stream<Either<ErrorModel, UserModel>> findOneAsStream({
+    required String userId,
+  }) {
+    try {
+      return db.collection("users").doc(userId).snapshots().map((snapshot) {
+        if (snapshot.exists) {
+          final user = UserModel.fromJson(snapshot.data()!);
+          return Either<ErrorModel, UserModel>.right(user);
+        } else {
+          return Either<ErrorModel, UserModel>.left(
+            ErrorModel(body: "User not found"),
+          );
+        }
+      }).handleError((error) {
+        if (error is FirebaseException) {
+          return Either<ErrorModel, UserModel>.left(
+            ErrorModel(body: handleFirebaseFirestoreErrors(error.code)),
+          );
+        }
+        return Either<ErrorModel, UserModel>.left(
+          ErrorModel(body: error.toString()),
+        );
+      });
+    } catch (e) {
+      return Stream.value(
+        Either<ErrorModel, UserModel>.left(
+          ErrorModel(body: e.toString()),
+        ),
+      );
+    }
+  }
+
   Future<Either<ErrorModel, SuccessModel>> updateOne({
     required String userId,
     required Map<String, dynamic> userData,

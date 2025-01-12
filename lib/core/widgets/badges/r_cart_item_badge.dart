@@ -24,7 +24,7 @@ class RCartItemBadge extends StatelessWidget {
                 final cartItemCount = cartController.cartItems.value.length;
                 return cartItemCount > 0
                     ? CircleAvatar(
-                        backgroundColor: Get.theme.primaryColor,
+                        backgroundColor: Get.theme.colorScheme.error,
                         radius: cartItemCount > 9 ? 10 : 8,
                         child: Text(
                           cartItemCount > 9

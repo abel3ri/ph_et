@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.pharma_et"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

@@ -4,10 +4,13 @@ class ProductItemModel {
     this.subCategoryId,
     this.name,
     this.description,
-    this.imageUrl,
+    this.images,
     this.price,
     this.createdAt,
     this.quantity = 1,
+    this.averageRating,
+    this.totalRatings,
+    this.ingredients,
   });
 
   final String? productId;
@@ -15,8 +18,11 @@ class ProductItemModel {
   final String? name;
   final String? description;
   final String? price;
-  final Map<String, dynamic>? imageUrl;
+  final List<Map<String, dynamic>>? images;
   final DateTime? createdAt;
+  final double? averageRating;
+  final int? totalRatings;
+  final List<String>? ingredients;
   int quantity;
 
   double get totalPrice {
@@ -29,10 +35,13 @@ class ProductItemModel {
       'name': name,
       'description': description,
       'price': price,
-      'imageUrl': imageUrl,
+      'images': images,
       "subCategoryId": subCategoryId,
       'createdAt': createdAt?.toIso8601String(),
       'quantity': quantity,
+      "averageRating": averageRating,
+      "totalRatings": totalRatings,
+      "ingredients": ingredients,
     };
   }
 
@@ -43,10 +52,19 @@ class ProductItemModel {
       name: json['name'] as String?,
       description: json['description'] as String?,
       price: json['price'] as String?,
-      imageUrl: json['imageUrl'] as Map<String, dynamic>?,
+      images: json['images'] != null
+          ? List<Map<String, dynamic>>.from(json['images'])
+          : null,
       createdAt:
           json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
       quantity: json['quantity'] ?? 1,
+      averageRating: json['averageRating'] != null
+          ? (json['averageRating'] as num).toDouble()
+          : 0.0,
+      totalRatings: json['totalRatings'] as int?,
+      ingredients: json['ingredients'] != null
+          ? List<String>.from(json['ingredients'])
+          : null,
     );
   }
 }

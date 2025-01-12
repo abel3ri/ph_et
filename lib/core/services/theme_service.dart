@@ -73,7 +73,7 @@ class AppTheme {
       secondary: const Color(0xff26a69a),
       secondaryContainer: const Color(0xff80cbc4),
       tertiary: const Color(0xff004d40),
-      error: const Color(0xffcf6679),
+      error: Color(0xffd32f2f),
       surface: const Color(0xFF1E1E1E),
     ),
   );

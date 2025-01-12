@@ -37,8 +37,8 @@ class RCircledImageAvatar extends StatelessWidget {
   })  : radius = 40,
         boxSize = 74;
 
-  final String? imageUrl; // Previous image URL
-  final File? selectedFile; // Newly selected image file
+  final String? imageUrl;
+  final File? selectedFile;
   final String fallBackText;
   final double radius;
   final double boxSize;

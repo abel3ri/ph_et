@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pharma_et/core/widgets/buttons/r_circled_button.dart';
 import 'package:pharma_et/core/widgets/cards/r_card.dart';
+import 'package:pharma_et/core/widgets/indicators/r_loading.dart';
 import 'package:pharma_et/core/widgets/indicators/r_not_found.dart';
 import 'package:pharma_et/core/widgets/placeholders/r_circled_image_avatar.dart';
 import 'package:pharma_et/core/widgets/shimmers/grids/r_item_card_shimmer_grid.dart';
+import 'package:pharma_et/core/widgets/sliders/r_carousel_slider.dart';
 import 'package:pharma_et/core/widgets/text_fields/r_styled_search_input_field.dart';
 import 'package:readmore/readmore.dart';
 
@@ -105,95 +107,128 @@ class CategoryView extends GetView<CategoryController> {
           ),
           SliverPadding(
             padding: const EdgeInsets.all(16),
-            sliver: Obx(() {
-              if (controller.isLoading.isTrue) {
-                return const SliverToBoxAdapter(
-                  child: RItemCardShimmerGrid(),
-                );
-              }
+            sliver: Obx(
+              () {
+                if (controller.isLoading.isTrue) {
+                  return const SliverToBoxAdapter(
+                    child: RItemCardShimmerGrid(),
+                  );
+                }
 
-              if (controller.subCategories.value.isEmpty) {
-                return const SliverToBoxAdapter(
-                  child: RNotFound(
-                    message: "No sub category found!",
-                  ),
-                );
-              }
-
-              return SliverList.separated(
-                itemCount: controller.filteredSubCategories.value.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: RStyledSearchBar(
-                            hintText: "Search categories...",
-                            searchController: controller.searchController,
-                            onSubmitted: (value) {
-                              controller.applySearch(value);
-                            },
-                            onClear: () {
-                              controller.searchController.clear();
-                              controller.applySearch("");
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  final subCategory =
-                      controller.filteredSubCategories.value[index - 1];
-                  return GestureDetector(
-                    onTap: () {
-                      Get.toNamed("/sub-category", arguments: {
-                        "subCategory": subCategory,
-                      });
-                    },
-                    child: RCard(
-                      child: Row(
-                        children: [
-                          RCircledImageAvatar.medium(
-                            fallBackText: "Image",
-                            imageUrl: subCategory.imageUrl?['url'],
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "${subCategory.name}",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: context.textTheme.titleMedium,
-                                ),
-                                Obx(() {
-                                  final count =
-                                      controller.subCategoryProductCounts[
-                                              subCategory.subCategoryId!] ??
-                                          0;
-                                  return Text(
-                                    "$count Product(s)",
-                                    style: context.textTheme.bodySmall,
-                                  );
-                                }),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          const RCircledButton.medium(
-                            icon: Icons.arrow_right_alt_outlined,
-                          ),
-                        ],
-                      ),
+                if (controller.subCategories.value.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: RNotFound(
+                      message: "No sub category found!",
                     ),
                   );
-                },
-                separatorBuilder: (context, index) =>
-                    SizedBox(height: Get.height * 0.02),
-              );
-            }),
+                }
+                return SliverList.separated(
+                  itemCount: controller.filteredSubCategories.value.length + 2,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      // Search Bar
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: RStyledSearchBar(
+                              hintText: "Search categories...",
+                              searchController: controller.searchController,
+                              onSubmitted: (value) {
+                                controller.applySearch(value);
+                              },
+                              onClear: () {
+                                controller.searchController.clear();
+                                controller.applySearch("");
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+
+                    if (index ==
+                        (controller.filteredSubCategories.value.length ~/ 2) +
+                            1) {
+                      return Obx(
+                        () {
+                          if (controller.homeController.isAdLoading.isTrue) {
+                            return const Center(
+                              child: RLoading(),
+                            );
+                          }
+                          if (controller.homeController.ads.value.isEmpty) {
+                            return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: RCarouselSlider(
+                              ads: controller.homeController.ads.value,
+                              onPageChanged: (index, reason) => controller
+                                  .homeController
+                                  .currentDynamicAdIndex
+                                  .value = index,
+                              currentIndex: controller
+                                  .homeController.currentDynamicAdIndex,
+                            ),
+                          );
+                        },
+                      );
+                    }
+
+                    final adjustedIndex = index >
+                            (controller.filteredSubCategories.value.length ~/
+                                    2) +
+                                1
+                        ? index - 2
+                        : index - 1;
+
+                    final subCategory =
+                        controller.filteredSubCategories.value[adjustedIndex];
+                    return GestureDetector(
+                      onTap: () {
+                        Get.toNamed("/sub-category", arguments: {
+                          "subCategory": subCategory,
+                        });
+                      },
+                      child: RCard(
+                        child: Row(
+                          children: [
+                            RCircledImageAvatar.medium(
+                              fallBackText: "Image",
+                              imageUrl: subCategory.imageUrl?['url'],
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${subCategory.name}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: context.textTheme.titleMedium,
+                                  ),
+                                  Text(
+                                    "${subCategory.productCount ?? "N/A"} Product(s)",
+                                    style: context.textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            const RCircledButton.medium(
+                              icon: Icons.arrow_right_alt_outlined,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) =>
+                      SizedBox(height: Get.height * 0.02),
+                );
+              },
+            ),
           )
         ],
       ),

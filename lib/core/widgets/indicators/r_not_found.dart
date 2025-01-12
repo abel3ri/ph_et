@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
 
 class RNotFound extends StatelessWidget {
   const RNotFound({
@@ -12,20 +12,25 @@ class RNotFound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          if (message != null)
-            Text(
-              "$message",
-              style: context.textTheme.titleMedium,
+    return SingleChildScrollView(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: Get.height * 0.04),
+            SvgPicture.asset(
+              width: Get.width * 0.6,
+              "assets/misc/error.svg",
+              fit: BoxFit.contain,
             ),
-          Lottie.asset(
-            width: Get.width * 0.7,
-            height: Get.height * 0.3,
-            "assets/lotties/not_found.json",
-          ),
-        ],
+            SizedBox(height: Get.height * 0.02),
+            if (message != null)
+              Text(
+                "$message",
+                style: context.textTheme.titleMedium,
+              ),
+          ],
+        ),
       ),
     );
   }

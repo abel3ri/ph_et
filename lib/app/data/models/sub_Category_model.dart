@@ -5,6 +5,7 @@ class SubCategoryModel {
     this.description,
     this.categoryId,
     this.imageUrl,
+    this.productCount,
     this.createdAt,
   });
   final String? subCategoryId;
@@ -12,6 +13,7 @@ class SubCategoryModel {
   final String? description;
   final String? categoryId;
   final Map<String, dynamic>? imageUrl;
+  final int? productCount;
   final DateTime? createdAt;
 
   Map<String, dynamic> toJson() {
@@ -21,6 +23,7 @@ class SubCategoryModel {
       'description': description,
       'categoryId': categoryId,
       'imageUrl': imageUrl,
+      "productCount": productCount,
       'createdAt': createdAt?.toIso8601String(),
     };
   }
@@ -32,6 +35,7 @@ class SubCategoryModel {
       description: json['description'] as String?,
       categoryId: json['categoryId'] as String?,
       imageUrl: json['imageUrl'] as Map<String, dynamic>?,
+      productCount: json['productCount'] as int?,
       createdAt:
           json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
     );

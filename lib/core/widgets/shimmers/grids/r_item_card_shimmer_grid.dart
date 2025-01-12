@@ -11,7 +11,7 @@ class RItemCardShimmerGrid extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       physics: const BouncingScrollPhysics(),
       shrinkWrap: true,
-      itemCount: 4,
+      itemCount: 6,
       crossAxisSpacing: 8,
       mainAxisSpacing: 8,
       gridDelegate: const SliverSimpleGridDelegateWithFixedCrossAxisCount(

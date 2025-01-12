@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
 import 'package:get/get.dart';
+import 'package:pharma_et/app/modules/cart/widgets/r_radio_list_tile.dart';
 import 'package:pharma_et/core/widgets/badges/r_cart_item_badge.dart';
 import 'package:pharma_et/core/widgets/buttons/r_circled_button.dart';
 import 'package:pharma_et/core/widgets/cards/r_item_card.dart';
 import 'package:pharma_et/core/widgets/indicators/r_loading.dart';
-
 import '../controllers/cart_controller.dart';
 
 class CartView extends GetView<CartController> {
@@ -18,6 +17,7 @@ class CartView extends GetView<CartController> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         surfaceTintColor: Colors.transparent,
         leading: hasPreviousPage
             ? IconButton(
@@ -67,7 +67,12 @@ class CartView extends GetView<CartController> {
                   itemBuilder: (context, index) {
                     final product = controller.cartItems.value[index];
                     return RItemCard(
-                      imageUrl: product.imageUrl?['url'],
+                      onTap: () {
+                        Get.toNamed("/product-details", arguments: {
+                          "productId": product.productId,
+                        });
+                      },
+                      imageUrl: product.images?.first['url'],
                       child: Column(
                         children: [
                           Text('${product.name}'),
@@ -136,23 +141,91 @@ class CartView extends GetView<CartController> {
                         ),
                       ),
                       Obx(
-                        () {
-                          if (controller.isLoading.isTrue) {
-                            return const RLoading();
-                          }
-                          return FilledButton(
-                            onPressed: () async {
-                              await controller.pay();
-                            },
-                            child: Text(
-                              "Checkout",
-                              style: context.textTheme.titleSmall!.copyWith(
-                                color: Colors.white,
+                        () => controller.isLoading.isTrue
+                            ? const RLoading()
+                            : FilledButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    isScrollControlled: true,
+                                    showDragHandle: true,
+                                    context: context,
+                                    builder: (context) => Wrap(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                "Choose Payment Option",
+                                                style: context
+                                                    .textTheme.titleMedium,
+                                              ),
+                                              const SizedBox(height: 12),
+                                              RRadioListTile(
+                                                controller: controller,
+                                                label: "Digital Payment",
+                                                iconPath:
+                                                    "assets/dev-icons/chapa.svg",
+                                                value: "digital_payment",
+                                                subtitle:
+                                                    "Pay with telebirr, CBE, Amole, Card payment, and many more!",
+                                              ),
+                                              const SizedBox(height: 12),
+                                              RRadioListTile(
+                                                controller: controller,
+                                                label: "Cash on Delivery",
+                                                iconPath:
+                                                    "assets/dev-icons/money.svg",
+                                                value: "cash_on_delivery",
+                                              ),
+                                              const SizedBox(height: 12),
+                                              RRadioListTile(
+                                                controller: controller,
+                                                label: "Bank Transfer",
+                                                iconPath:
+                                                    "assets/dev-icons/bank.svg",
+                                                value: "bank_transfer",
+                                              ),
+                                              const SizedBox(height: 12),
+                                              Obx(
+                                                () => controller
+                                                        .isLoading.isTrue
+                                                    ? const RLoading()
+                                                    : FilledButton(
+                                                        onPressed: () async {
+                                                          Get.back();
+                                                          Get.toNamed(
+                                                            "/cart/checkout",
+                                                          );
+                                                        },
+                                                        child: Text(
+                                                          "Proceed",
+                                                          style: context
+                                                              .textTheme
+                                                              .titleSmall!
+                                                              .copyWith(
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  "Checkout",
+                                  style: context.textTheme.titleSmall!.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      )
+                      ),
                     ],
                   ),
                 ),

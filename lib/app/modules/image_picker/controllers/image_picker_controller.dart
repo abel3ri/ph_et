@@ -11,6 +11,7 @@ class ImagePickerController extends GetxController {
   Rx<String?> profileImagePath = Rx<String?>(null);
   Rx<String?> categoryImagePath = Rx<String?>(null);
   Rx<String?> subCategoryImagePath = Rx<String?>(null);
+  Rx<String?> receiptImagePath = Rx<String?>(null);
 
   Future<Either<ErrorModel, File>> pickImageFromCamera() async {
     try {
@@ -119,6 +120,7 @@ class ImagePickerController extends GetxController {
     super.onClose();
     profileImagePath.close();
     categoryImagePath.close();
+    receiptImagePath.close();
     subCategoryImagePath.close();
   }
 }

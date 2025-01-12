@@ -15,7 +15,7 @@ class GetStartedView extends GetView<GetStartedController> {
         leadingWidth: Get.width * 0.4,
         surfaceTintColor: Colors.transparent,
         leading: RPageIndicator(
-          controller: controller,
+          currentIndex: controller.currentIndex,
           itemCount: 3,
           color: Get.theme.primaryColor,
         ),

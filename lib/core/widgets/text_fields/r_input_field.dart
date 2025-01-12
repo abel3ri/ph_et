@@ -13,6 +13,8 @@ class RInputField extends StatelessWidget {
     required this.label,
     this.suffix,
     this.prefix,
+    this.maxLines = 1,
+    this.borderRadius = 100,
     super.key,
   });
 
@@ -25,6 +27,8 @@ class RInputField extends StatelessWidget {
   final Widget? prefix;
   String? Function(String? value) validator;
   final String label;
+  final int maxLines;
+  final double borderRadius;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -45,6 +49,7 @@ class RInputField extends StatelessWidget {
           textInputAction: textInputAction,
           keyboardType: keyboardType,
           obscureText: obscureText,
+          maxLines: maxLines,
           decoration: InputDecoration(
             filled: true,
             fillColor: context.isDarkMode
@@ -58,23 +63,23 @@ class RInputField extends StatelessWidget {
             ),
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(100),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
             focusedErrorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: Theme.of(context).colorScheme.error,
               ),
-              borderRadius: BorderRadius.circular(100),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
             errorBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: Theme.of(context).colorScheme.error,
               ),
-              borderRadius: BorderRadius.circular(100),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(100),
+              borderRadius: BorderRadius.circular(borderRadius),
             ),
             suffixIcon: suffix,
             prefix: prefix,

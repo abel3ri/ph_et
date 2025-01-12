@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'package:get/get.dart';
-import 'package:pharma_et/app/modules/cart/controllers/cart_controller.dart';
 import 'package:pharma_et/core/widgets/badges/r_cart_item_badge.dart';
 import 'package:pharma_et/core/widgets/buttons/r_circled_button.dart';
 import 'package:pharma_et/core/widgets/cards/r_item_card.dart';
+import 'package:pharma_et/core/widgets/indicators/r_loading.dart';
 import 'package:pharma_et/core/widgets/indicators/r_not_found.dart';
 import 'package:pharma_et/core/widgets/shimmers/grids/r_item_card_shimmer_grid.dart';
+import 'package:pharma_et/core/widgets/sliders/r_carousel_slider.dart';
 import 'package:pharma_et/core/widgets/text_fields/r_styled_search_input_field.dart';
-import 'package:readmore/readmore.dart';
 
 import '../controllers/sub_category_controller.dart';
 
@@ -17,7 +17,6 @@ class SubCategoryView extends GetView<SubCategoryController> {
   const SubCategoryView({super.key});
   @override
   Widget build(BuildContext context) {
-    final cartController = Get.find<CartController>();
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
@@ -76,6 +75,29 @@ class SubCategoryView extends GetView<SubCategoryController> {
               SizedBox(height: Get.height * 0.02),
               Obx(
                 () {
+                  if (controller.homeController.isAdLoading.isTrue) {
+                    return const Center(
+                      child: RLoading(),
+                    );
+                  }
+                  if (controller.homeController.ads.value.isEmpty) {
+                    return const SizedBox.shrink();
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: RCarouselSlider(
+                      ads: controller.homeController.ads.value,
+                      onPageChanged: (index, reason) => controller
+                          .homeController.currentDynamicAdIndex.value = index,
+                      currentIndex:
+                          controller.homeController.currentDynamicAdIndex,
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: Get.height * 0.02),
+              Obx(
+                () {
                   if (controller.isLoading.isTrue) {
                     return const RItemCardShimmerGrid();
                   }
@@ -97,7 +119,12 @@ class SubCategoryView extends GetView<SubCategoryController> {
                     itemBuilder: (context, index) {
                       final product = controller.filteredProducts.value[index];
                       return RItemCard(
-                        imageUrl: product.imageUrl?['url'],
+                        onTap: () {
+                          Get.toNamed("/product-details", arguments: {
+                            "productId": product.productId,
+                          });
+                        },
+                        imageUrl: product.images?.first['url'],
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -107,15 +134,27 @@ class SubCategoryView extends GetView<SubCategoryController> {
                               overflow: TextOverflow.ellipsis,
                               style: context.textTheme.titleSmall,
                             ),
-                            ReadMoreText(
-                              '${product.description}',
-                              trimExpandedText: "less",
-                              trimMode: TrimMode.Line,
-                              trimCollapsedText: "more",
-                              trimLines: 2,
-                              delimiter: "...",
+                            SizedBox(height: Get.height * 0.01),
+                            Row(
+                              children: [
+                                Text(
+                                  "${product.averageRating?.toStringAsFixed(1)}",
+                                  style: context.textTheme.titleLarge,
+                                ),
+                                Icon(
+                                  Icons.star_rounded,
+                                  color: Get.theme.primaryColor,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    "(${product.totalRatings ?? 0} reviews)",
+                                    style: context.textTheme.bodySmall,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                )
+                              ],
                             ),
-                            SizedBox(height: Get.height * 0.02),
+                            SizedBox(height: Get.height * 0.01),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -129,8 +168,8 @@ class SubCategoryView extends GetView<SubCategoryController> {
                                 ),
                                 Obx(
                                   () {
-                                    final bool isInCart = cartController
-                                        .cartItems.value
+                                    final bool isInCart = controller
+                                        .cartController.cartItems.value
                                         .any((prod) =>
                                             prod.productId ==
                                             product.productId);
@@ -139,10 +178,11 @@ class SubCategoryView extends GetView<SubCategoryController> {
                                       icon: isInCart ? Icons.remove : Icons.add,
                                       onTap: () {
                                         if (isInCart) {
-                                          cartController
+                                          controller.cartController
                                               .removeItemFromCart(product);
                                         } else {
-                                          cartController.addToCart(product);
+                                          controller.cartController
+                                              .addToCart(product);
                                         }
                                       },
                                     );

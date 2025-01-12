@@ -24,7 +24,7 @@ class RModalBottomSheet extends StatelessWidget {
         ),
         ...children,
         RListTile(
-          title: "cancel".tr,
+          title: "Cancel".tr,
           leadingIcon: Icons.close,
           onPressed: () {
             Get.back();

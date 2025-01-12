@@ -21,7 +21,7 @@ class HomeAppBar extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () async {
-                  Get.find<HomeWrapperController>().index.value = 3;
+                  Get.find<HomeWrapperController>().index.value = 4;
                 },
                 child: RCircledImageAvatar.small(
                   fallBackText: "profile",

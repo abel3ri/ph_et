@@ -7,16 +7,25 @@ class RFilledButton extends StatelessWidget {
     required this.onPressed,
     required this.label,
     this.fillColor,
+    this.shape = "stadium",
   });
 
   final void Function()? onPressed;
   final Color? fillColor;
   final String label;
+  final String? shape;
 
   @override
   Widget build(BuildContext context) {
     return FilledButton(
       style: ButtonStyle(
+        shape: WidgetStatePropertyAll(
+          shape == "rounded"
+              ? RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                )
+              : null,
+        ),
         backgroundColor: WidgetStatePropertyAll(fillColor),
       ),
       onPressed: onPressed,

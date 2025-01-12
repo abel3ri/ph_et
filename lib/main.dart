@@ -25,7 +25,6 @@ void main() async {
     final themeController = Get.put(ThemeController());
     Get.put<AuthController>(AuthController());
     final localeController = Get.put(LocaleController());
-
     runApp(
       GetMaterialApp(
         title: "Pharma ET",

@@ -9,6 +9,7 @@ import 'package:pharma_et/core/controllers/theme_controller.dart';
 import 'package:pharma_et/core/widgets/buttons/r_circled_button.dart';
 import 'package:pharma_et/core/widgets/buttons/r_filled_button.dart';
 import 'package:pharma_et/core/widgets/cards/r_card.dart';
+import 'package:pharma_et/core/widgets/dialogs/r_show_dialog.dart';
 import 'package:pharma_et/core/widgets/indicators/r_loading.dart';
 import 'package:pharma_et/core/widgets/placeholders/r_circled_image_avatar.dart';
 
@@ -57,9 +58,10 @@ class ProfileView extends GetView<ProfileController> {
                               GestureDetector(
                                 onTap: () {
                                   Get.toNamed(
-                                    "/profile/image-preview",
+                                    "/image-preview",
                                     arguments: {
                                       "imageUrl": user.profileImage?['url'],
+                                      "imageType": "network_image",
                                     },
                                   );
                                 },
@@ -88,9 +90,10 @@ class ProfileView extends GetView<ProfileController> {
                                   icon: Icons.fullscreen,
                                   onTap: () {
                                     Get.toNamed(
-                                      "/profile/image-preview",
+                                      "/image-preview",
                                       arguments: {
                                         "imageUrl": user.profileImage?['url'],
+                                        "imageType": "network_image",
                                       },
                                     );
                                   },
@@ -261,47 +264,17 @@ class ProfileView extends GetView<ProfileController> {
                           fontWeight: FontWeight.bold,
                         ),
                         onTap: () async {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              title: Text(
-                                  "Ar you sure you want to delete your account?"
-                                      .tr),
-                              content: Text(
-                                  "Deleting your account is a permanent action that cannot be undone. Are you sure you want to proceed?"
-                                      .tr),
-                              actions: [
-                                TextButton(
-                                  onPressed: () async {
-                                    Get.back();
-                                    await controller.deleteAccount();
-                                  },
-                                  child: Text(
-                                    "I understand".tr,
-                                    style:
-                                        context.textTheme.titleMedium!.copyWith(
-                                      color: Get.theme.primaryColor,
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Get.back();
-                                  },
-                                  child: Text(
-                                    "Cancel".tr,
-                                    style:
-                                        context.textTheme.titleMedium!.copyWith(
-                                      color: Get.theme.primaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          final result = await rShowDialog(
+                            title: "Delete Account",
+                            content:
+                                "Are you sure you want delete your account?",
+                            mainActionLabel: "I Understand",
                           );
+
+                          Get.back();
+                          if (result == true) {
+                            await controller.deleteAccount();
+                          }
                         },
                       ),
                     ],

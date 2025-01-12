@@ -18,7 +18,7 @@ class ImagePickerView extends GetView<ImagePickerController> {
   @override
   Widget build(BuildContext context) {
     return RModalBottomSheet(
-      label: label ?? "Pick Profile Image",
+      label: label ?? "Pick an image",
       children: [
         RListTile(
           title: "Gallery".tr,
@@ -34,6 +34,8 @@ class ImagePickerView extends GetView<ImagePickerController> {
                 controller.categoryImagePath(r.path);
               } else if (imageType == "sub_category_image") {
                 controller.subCategoryImagePath(r.path);
+              } else if (imageType == "receipt_image") {
+                controller.receiptImagePath(r.path);
               }
               controller.update();
               Get.back();
@@ -54,6 +56,8 @@ class ImagePickerView extends GetView<ImagePickerController> {
                 controller.categoryImagePath(r.path);
               } else if (imageType == "sub_category_image") {
                 controller.subCategoryImagePath(r.path);
+              } else if (imageType == "receipt_image") {
+                controller.receiptImagePath(r.path);
               }
               Get.back();
             });
