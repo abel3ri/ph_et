@@ -124,8 +124,8 @@ Widget buildRatingList(ProductDetailsController controller) {
                         ),
                       ],
                     ),
-                    SizedBox(height: Get.height * 0.02),
-                    if (review.comment != null)
+                    if (review.comment != null) ...[
+                      SizedBox(height: Get.height * 0.02),
                       ReadMoreText(
                         review.comment!,
                         trimLines: 3,
@@ -133,6 +133,7 @@ Widget buildRatingList(ProductDetailsController controller) {
                         trimExpandedText: 'Show less',
                         trimMode: TrimMode.Line,
                       ),
+                    ]
                   ],
                 );
               }

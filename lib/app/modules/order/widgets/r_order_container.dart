@@ -107,9 +107,10 @@ class ROrderContainer extends GetView<OrderController> {
                   ),
                   SizedBox(height: Get.height * 0.02),
                   Align(
-                    alignment: Alignment.centerRight,
+                    alignment: Alignment.centerLeft,
                     child: RCircledButton.medium(
                       icon: Icons.arrow_right_alt_rounded,
+                      color: Get.theme.colorScheme.secondary,
                       onTap: () {
                         Get.to(
                           () => const OrderDetailsView(),
