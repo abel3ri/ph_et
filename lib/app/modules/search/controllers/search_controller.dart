@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:pharma_et/app/data/models/error_model.dart';
 import 'package:pharma_et/app/data/models/product_item_model.dart';
 import 'package:pharma_et/app/data/services/product_item_service.dart';
+import 'package:pharma_et/app/modules/cart/controllers/cart_controller.dart';
 
 class SearchController extends GetxController {
   late ProductItemService productItemService;
+  late CartController cartController;
   final RxList<ProductItemModel> searchResults = <ProductItemModel>[].obs;
   final RxBool isLoading = false.obs;
 
@@ -19,6 +21,7 @@ class SearchController extends GetxController {
   void onInit() {
     super.onInit();
     productItemService = Get.find<ProductItemService>();
+    cartController = Get.find<CartController>();
 
     debounce<String>(
       query,

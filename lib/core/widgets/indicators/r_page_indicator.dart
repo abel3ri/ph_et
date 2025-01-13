@@ -24,7 +24,7 @@ class RPageIndicator extends StatelessWidget {
             () => AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: currentIndex.value == index ? 32 : 8,
+              width: currentIndex.value == index ? 24 : 6,
               height: 4,
               decoration: BoxDecoration(
                 color: color ?? Get.theme.primaryColor,

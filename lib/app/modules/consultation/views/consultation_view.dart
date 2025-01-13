@@ -4,6 +4,7 @@ import 'package:pharma_et/app/modules/consultation/controllers/consultation_cont
 import 'package:pharma_et/app/modules/consultation/widgets/r_chat_container.dart';
 import 'package:pharma_et/app/modules/consultation/widgets/r_chat_input.dart';
 import 'package:pharma_et/app/modules/consultation/widgets/s_chat_container.dart';
+import 'package:pharma_et/core/widgets/cards/r_card.dart';
 
 class ConsultationView extends GetView<ConsultationController> {
   const ConsultationView({super.key});
@@ -33,7 +34,27 @@ class ConsultationView extends GetView<ConsultationController> {
               final messages = controller.messages;
 
               if (messages.isEmpty) {
-                return const Center(child: Text('No messages yet.'));
+                return Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: Get.width * 0.15),
+                    child: RCard(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.light_mode_rounded,
+                            size: 64,
+                          ),
+                          SizedBox(height: Get.height * 0.02),
+                          const Text(
+                            "Start a conversation with a professional to get personalized advice and insights.",
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
               }
 
               return ListView.separated(

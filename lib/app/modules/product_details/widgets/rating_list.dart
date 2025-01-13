@@ -6,6 +6,7 @@ import 'package:pharma_et/app/data/models/review_model.dart';
 import 'package:pharma_et/app/data/models/user_model.dart';
 import 'package:pharma_et/app/modules/product_details/controllers/product_details_controller.dart';
 import 'package:pharma_et/core/widgets/buttons/r_circled_button.dart';
+import 'package:readmore/readmore.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:pharma_et/core/widgets/indicators/r_loading.dart';
 import 'package:pharma_et/core/widgets/placeholders/r_circled_image_avatar.dart';
@@ -35,90 +36,103 @@ Widget buildRatingList(ProductDetailsController controller) {
               );
 
               if (userData != null) {
-                return Row(
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    RCircledImageAvatar.small(
-                      fallBackText: "profile",
-                      imageUrl: userData?.profileImage?['url'],
-                    ),
-                    SizedBox(width: Get.width * 0.02),
-                    Column(
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "${userData?.firstName} ${userData?.lastName}",
-                          style: context.textTheme.titleSmall,
+                        RCircledImageAvatar.small(
+                          fallBackText: "profile",
+                          imageUrl: userData?.profileImage?['url'],
                         ),
-                        RatingBarIndicator(
-                          itemBuilder: (context, index) => Icon(
-                            Icons.star_rounded,
-                            color: Get.theme.primaryColor,
-                          ),
-                          itemCount: 5,
-                          itemSize: 16,
-                          rating: review.rating ?? 0.0,
-                        ),
-                        if (review.comment != null) Text(review.comment!),
-                      ],
-                    ),
-                    const Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          timeago.format(
-                            review.createdAt ?? DateTime.now(),
-                          ),
-                          style: context.textTheme.bodySmall!.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        if (controller.authController.currentUser.value !=
-                                null &&
-                            controller
-                                    .authController.currentUser.value?.userId ==
-                                review.userId) ...[
-                          const SizedBox(height: 6),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
+                        SizedBox(width: Get.width * 0.02),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              RCircledButton(
-                                icon: Icons.edit_rounded,
-                                onTap: () {
-                                  Get.toNamed(
-                                    "/product-details/review-form",
-                                    arguments: {
-                                      "productId": controller.productId,
-                                      "isEditing": true,
-                                      "review": review,
-                                    },
-                                  );
-                                },
+                              Text(
+                                "${userData?.firstName} ${userData?.lastName}",
+                                style: context.textTheme.titleSmall,
                               ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              RCircledButton(
-                                icon: Icons.delete_rounded,
-                                onTap: () async {
-                                  await controller.deleteReview(
-                                    reviewId: review.reviewId!,
-                                  );
-                                },
+                              RatingBarIndicator(
+                                itemBuilder: (context, index) => Icon(
+                                  Icons.star_rounded,
+                                  color: Get.theme.primaryColor,
+                                ),
+                                itemCount: 5,
+                                itemSize: 16,
+                                rating: review.rating ?? 0.0,
                               ),
                             ],
                           ),
-                        ],
-                        if (review.createdAt != review.updatedAt) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            "edited",
-                            style: context.textTheme.bodySmall,
-                          )
-                        ],
+                        ),
+                        const Spacer(),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              timeago.format(
+                                review.createdAt ?? DateTime.now(),
+                              ),
+                              style: context.textTheme.bodySmall!.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            if (controller.authController.currentUser.value !=
+                                    null &&
+                                controller.authController.currentUser.value
+                                        ?.userId ==
+                                    review.userId) ...[
+                              const SizedBox(height: 6),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  RCircledButton(
+                                    icon: Icons.edit_rounded,
+                                    onTap: () {
+                                      Get.toNamed(
+                                        "/product-details/review-form",
+                                        arguments: {
+                                          "productId": controller.productId,
+                                          "isEditing": true,
+                                          "review": review,
+                                        },
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(width: 8),
+                                  RCircledButton(
+                                    icon: Icons.delete_rounded,
+                                    onTap: () async {
+                                      await controller.deleteReview(
+                                        reviewId: review.reviewId!,
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                            if (review.createdAt != review.updatedAt) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                "edited",
+                                style: context.textTheme.bodySmall,
+                              )
+                            ],
+                          ],
+                        ),
                       ],
                     ),
+                    SizedBox(height: Get.height * 0.02),
+                    if (review.comment != null)
+                      ReadMoreText(
+                        review.comment!,
+                        trimLines: 3,
+                        trimCollapsedText: 'Show more',
+                        trimExpandedText: 'Show less',
+                        trimMode: TrimMode.Line,
+                      ),
                   ],
                 );
               }

@@ -81,7 +81,7 @@ Widget buildProductList(List<dynamic> productResults, OrderModel order) {
       controller: ScrollController(),
       itemCount: order.products?.length ?? 0,
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      // physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final productResult = productResults[index];
         return productResult.fold(
@@ -269,31 +269,17 @@ Widget buildReceipt(OrderModel order) {
 
 Widget buildOrderActions(OrderModel order, OrderDetailsController controller) {
   if (order.status == 'pending') {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        RFilledButton(
-          fillColor: Get.theme.colorScheme.error,
-          onPressed: () async {
-            await controller.editOrder({
-              "status": "cancelled",
-            });
-          },
-          label: "Cancel Order",
-          shape: "rounded",
-        ),
-        SizedBox(width: Get.width * 0.02),
-        RFilledButton(
-          fillColor: Get.theme.primaryColor,
-          onPressed: () async {
-            await controller.editOrder({
-              "status": "delivered",
-            });
-          },
-          label: "Mark Delivered",
-          shape: "rounded",
-        ),
-      ],
+    return Center(
+      child: RFilledButton(
+        fillColor: Get.theme.colorScheme.error,
+        onPressed: () async {
+          await controller.editOrder({
+            "status": "cancelled",
+          });
+        },
+        label: "Cancel Order",
+        shape: "rounded",
+      ),
     );
   } else if (order.status == 'cancelled') {
     return Center(

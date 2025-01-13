@@ -2,12 +2,10 @@ import 'package:flutter/material.dart' hide SearchController;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pharma_et/app/modules/cart/controllers/cart_controller.dart';
 import 'package:pharma_et/core/widgets/buttons/r_circled_button.dart';
 import 'package:pharma_et/core/widgets/cards/r_item_card.dart';
 import 'package:pharma_et/core/widgets/indicators/r_loading.dart';
 import 'package:pharma_et/core/widgets/indicators/r_not_found.dart';
-import 'package:readmore/readmore.dart';
 import '../controllers/search_controller.dart';
 
 class SearchView extends GetView<SearchController> {
@@ -15,7 +13,6 @@ class SearchView extends GetView<SearchController> {
 
   @override
   Widget build(BuildContext context) {
-    final cartController = Get.find<CartController>();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -92,6 +89,11 @@ class SearchView extends GetView<SearchController> {
                 itemBuilder: (context, index) {
                   final product = controller.searchResults[index];
                   return RItemCard(
+                    onTap: () {
+                      Get.toNamed("/product-details", arguments: {
+                        "productId": product.productId,
+                      });
+                    },
                     imageUrl: product.images?.first['url'],
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,15 +104,27 @@ class SearchView extends GetView<SearchController> {
                           overflow: TextOverflow.ellipsis,
                           style: context.textTheme.titleSmall,
                         ),
-                        ReadMoreText(
-                          '${product.description}',
-                          trimExpandedText: "less",
-                          trimMode: TrimMode.Line,
-                          trimCollapsedText: "more",
-                          trimLines: 2,
-                          delimiter: "...",
+                        SizedBox(height: Get.height * 0.01),
+                        Row(
+                          children: [
+                            Text(
+                              "${product.averageRating?.toStringAsFixed(1)}",
+                              style: context.textTheme.titleLarge,
+                            ),
+                            Icon(
+                              Icons.star_rounded,
+                              color: Get.theme.primaryColor,
+                            ),
+                            Expanded(
+                              child: Text(
+                                "(${product.totalRatings} reviews)",
+                                style: context.textTheme.bodySmall,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )
+                          ],
                         ),
-                        SizedBox(height: Get.height * 0.02),
+                        SizedBox(height: Get.height * 0.01),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -124,18 +138,20 @@ class SearchView extends GetView<SearchController> {
                             ),
                             Obx(
                               () {
-                                final bool isInCart =
-                                    cartController.cartItems.value.any((prod) =>
+                                final bool isInCart = controller
+                                    .cartController.cartItems.value
+                                    .any((prod) =>
                                         prod.productId == product.productId);
 
                                 return RCircledButton.medium(
                                   icon: isInCart ? Icons.remove : Icons.add,
                                   onTap: () {
                                     if (isInCart) {
-                                      cartController
+                                      controller.cartController
                                           .removeItemFromCart(product);
                                     } else {
-                                      cartController.addToCart(product);
+                                      controller.cartController
+                                          .addToCart(product);
                                     }
                                   },
                                 );

@@ -37,7 +37,7 @@ class RCarouselSlider extends StatelessWidget {
             viewportFraction: 1,
             enlargeCenterPage: true,
             autoPlay: ads.length > 1,
-            height: 128,
+            height: 160,
           ),
         ),
         Align(

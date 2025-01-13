@@ -22,9 +22,11 @@ class RBannerItem extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         if (link != null) {
-          await launchUrl(
-            Uri.parse(link!),
-          );
+          if (!link!.startsWith('http://') && !link!.startsWith('https://')) {
+            await launchUrl(Uri.parse('https://$link'));
+          } else {
+            await launchUrl(Uri.parse('$link'));
+          }
         }
       },
       child: Container(
@@ -32,7 +34,7 @@ class RBannerItem extends StatelessWidget {
           color: Get.theme.primaryColor,
           borderRadius: BorderRadius.circular(8),
           image: DecorationImage(
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.cover,
             image: CachedNetworkImageProvider(imageUrl),
           ),
         ),
@@ -55,9 +57,9 @@ class RBannerItem extends StatelessWidget {
                     Expanded(
                       child: Text(
                         label,
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: context.textTheme.titleMedium
+                        style: context.textTheme.titleSmall
                             ?.copyWith(color: Colors.white),
                       ),
                     ),

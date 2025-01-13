@@ -22,7 +22,7 @@ Future<bool?> rShowDialog({
           },
           child: Text(
             mainActionLabel.tr,
-            style: context.textTheme.titleMedium!.copyWith(
+            style: context.textTheme.titleSmall!.copyWith(
               color: Get.theme.primaryColor,
             ),
           ),
@@ -33,7 +33,7 @@ Future<bool?> rShowDialog({
           },
           child: Text(
             cancelLabel.tr,
-            style: context.textTheme.titleMedium!.copyWith(
+            style: context.textTheme.titleSmall!.copyWith(
               color: Get.theme.primaryColor,
             ),
           ),

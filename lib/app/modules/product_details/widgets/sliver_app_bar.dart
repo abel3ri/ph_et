@@ -24,7 +24,7 @@ Widget buildSliverAppBar(product, controller) {
 
               return CachedNetworkImage(
                 imageUrl: imageUrl,
-                fit: BoxFit.cover,
+                fit: BoxFit.contain,
                 width: double.infinity,
                 placeholder: (context, url) => const Center(
                   child: CircularProgressIndicator(),
@@ -39,7 +39,7 @@ Widget buildSliverAppBar(product, controller) {
             },
             options: CarouselOptions(
               viewportFraction: 1,
-              enableInfiniteScroll: false,
+              enableInfiniteScroll: true,
               height: double.infinity,
               onPageChanged: (index, reason) {
                 controller.currentIndex.value = index;

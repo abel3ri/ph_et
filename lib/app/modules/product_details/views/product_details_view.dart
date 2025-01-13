@@ -80,6 +80,10 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
                           ),
                           SizedBox(height: Get.height * 0.01),
                           ReadMoreText(
+                            trimLines: 4,
+                            trimCollapsedText: 'Show more',
+                            trimExpandedText: 'Show less',
+                            trimMode: TrimMode.Line,
                             product.description != null
                                 ? '${product.description}'
                                 : "Description not available",

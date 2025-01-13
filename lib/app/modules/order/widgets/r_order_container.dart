@@ -105,6 +105,22 @@ class ROrderContainer extends GetView<OrderController> {
                       ))
                     ],
                   ),
+                  SizedBox(height: Get.height * 0.02),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: RCircledButton.medium(
+                      icon: Icons.arrow_right_alt_rounded,
+                      onTap: () {
+                        Get.to(
+                          () => const OrderDetailsView(),
+                          binding: OrderDetailsBinding(),
+                          arguments: {
+                            "orderId": order.orderId,
+                          },
+                        );
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
