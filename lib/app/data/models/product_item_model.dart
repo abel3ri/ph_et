@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ProductItemModel {
   ProductItemModel({
     this.productId,
@@ -11,6 +13,7 @@ class ProductItemModel {
     this.averageRating,
     this.totalRatings,
     this.ingredients,
+    this.documentSnapshot,
   });
 
   final String? productId;
@@ -23,6 +26,7 @@ class ProductItemModel {
   final double? averageRating;
   final int? totalRatings;
   final List<String>? ingredients;
+  final DocumentSnapshot? documentSnapshot;
   int quantity;
 
   double get totalPrice {
@@ -45,7 +49,8 @@ class ProductItemModel {
     };
   }
 
-  factory ProductItemModel.fromJson(Map<String, dynamic> json) {
+  factory ProductItemModel.fromJson(Map<String, dynamic> json,
+      {DocumentSnapshot? snapshot}) {
     return ProductItemModel(
       productId: json['productId'] as String?,
       subCategoryId: json['subCategoryId'] as String?,
@@ -65,6 +70,7 @@ class ProductItemModel {
       ingredients: json['ingredients'] != null
           ? List<String>.from(json['ingredients'])
           : null,
+      documentSnapshot: snapshot,
     );
   }
 }

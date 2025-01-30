@@ -89,7 +89,7 @@ class HomeView extends GetView<HomeController> {
                                   'consultation') {
                                 Get.toNamed("/consultation");
                               } else {
-                                Get.toNamed("/category", arguments: {
+                                Get.toNamed("/sub-category", arguments: {
                                   "category": category,
                                 });
                               }

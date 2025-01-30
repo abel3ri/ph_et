@@ -53,7 +53,7 @@ class ProductDetailsController extends GetxController {
     }
 
     pagingController.addPageRequestListener((pageKey) {
-      fetchPage(pageKey);
+      fetchReviews(pageKey);
     });
 
     fetchReviewsStream();
@@ -72,7 +72,7 @@ class ProductDetailsController extends GetxController {
     });
   }
 
-  Future<void> fetchPage(int pageKey) async {
+  Future<void> fetchReviews(int pageKey) async {
     if (product.value == null) return;
 
     try {
@@ -112,6 +112,7 @@ class ProductDetailsController extends GetxController {
         },
         (r) {
           reviews.value = r;
+          pagingController.refresh();
           isLoading(false);
         },
       );

@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import 'package:pharma_et/app/modules/products/bindings/products_binding.dart';
+import 'package:pharma_et/app/modules/products/views/products_view.dart';
+import 'package:pharma_et/app/modules/sub_category/bindings/sub_category_binding.dart';
+import 'package:pharma_et/app/modules/sub_category/views/sub_category_view.dart';
 
 import '../modules/auth/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/auth/forgot_password/views/forgot_password_view.dart';
@@ -12,8 +16,6 @@ import '../modules/cart/bindings/cart_binding.dart';
 import '../modules/cart/bindings/checkout_binding.dart';
 import '../modules/cart/views/cart_view.dart';
 import '../modules/cart/views/checkout_view.dart';
-import '../modules/category/bindings/category_binding.dart';
-import '../modules/category/views/category_view.dart';
 import '../modules/consultation/bindings/consultation_binding.dart';
 import '../modules/consultation/views/consultation_view.dart';
 import '../modules/get_started/bindings/get_started_binding.dart';
@@ -45,8 +47,6 @@ import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
-import '../modules/sub_category/bindings/sub_category_binding.dart';
-import '../modules/sub_category/views/sub_category_view.dart';
 
 part 'app_routes.dart';
 
@@ -132,14 +132,14 @@ class AppPages {
       ],
     ),
     GetPage(
-      name: _Paths.CATEGORY,
-      page: () => const CategoryView(),
-      binding: CategoryBinding(),
-    ),
-    GetPage(
       name: _Paths.SUB_CATEGORY,
       page: () => const SubCategoryView(),
       binding: SubCategoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.PRODUCTS,
+      page: () => const ProductsView(),
+      binding: ProductsBinding(),
     ),
     GetPage(
       name: _Paths.CART,
@@ -148,7 +148,7 @@ class AppPages {
       children: [
         GetPage(
           name: _Paths.CHECKOUT,
-          page: () => CheckoutView(),
+          page: () => const CheckoutView(),
           binding: CheckoutBinding(),
         ),
       ],
@@ -179,7 +179,7 @@ class AppPages {
       children: [
         GetPage(
           name: _Paths.REVIEW_FORM,
-          page: () => ReviewFormView(),
+          page: () => const ReviewFormView(),
           binding: ReviewFormBinding(),
         ),
       ],

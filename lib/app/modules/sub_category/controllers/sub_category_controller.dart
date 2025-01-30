@@ -2,98 +2,79 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pharma_et/app/data/models/product_item_model.dart';
+import 'package:pharma_et/app/data/models/category_model.dart';
 import 'package:pharma_et/app/data/models/sub_Category_model.dart';
-import 'package:pharma_et/app/data/services/product_item_service.dart';
-import 'package:pharma_et/app/modules/cart/controllers/cart_controller.dart';
+import 'package:pharma_et/app/data/services/sub_category_service.dart';
 import 'package:pharma_et/app/modules/home/controllers/home_controller.dart';
 
 class SubCategoryController extends GetxController {
-  Rx<List<ProductItemModel>> products = Rx<List<ProductItemModel>>([]);
-  Rx<List<ProductItemModel>> filteredProducts = Rx<List<ProductItemModel>>([]);
+  final scrollController = ScrollController();
+  final scrollOffset = 0.0.obs;
+  final searchController = TextEditingController();
+
+  Rx<List<SubCategoryModel>> subCategories = Rx<List<SubCategoryModel>>([]);
+  Rx<List<SubCategoryModel>> filteredSubCategories =
+      Rx<List<SubCategoryModel>>([]);
+  RxMap<String, int> subCategoryProductCounts = <String, int>{}.obs;
   Rx<bool> isLoading = false.obs;
 
-  SubCategoryModel? selectedSubCategory;
-  late ProductItemService productItemService;
-  late CartController cartController;
+  CategoryModel? selectedCategory;
+  late SubCategoryService subCategoryService;
   late HomeController homeController;
-  StreamSubscription? productSubscription;
-
-  final searchController = TextEditingController();
+  StreamSubscription? subCategorySubscription;
 
   @override
   void onInit() {
     super.onInit();
-
-    selectedSubCategory = Get.arguments?['subCategory'];
-    productItemService = Get.find<ProductItemService>();
-    cartController = Get.find<CartController>();
+    scrollController.addListener(() {
+      scrollOffset.value = scrollController.offset;
+    });
+    searchController.addListener(_onSearchChanged);
+    selectedCategory = Get.arguments?['category'];
+    subCategoryService = Get.find<SubCategoryService>();
     homeController = Get.find<HomeController>();
 
-    if (selectedSubCategory != null) {
-      watchProducts();
+    if (selectedCategory != null) {
+      watchSubCategories();
     }
-
-    searchController.addListener(() {
-      applySearch(searchController.text);
-    });
   }
 
-  void watchProducts() {
+  void _onSearchChanged() {
+    applySearch(searchController.text.trim());
+  }
+
+  void applySearch(String query) {
+    if (query.isEmpty) {
+      filteredSubCategories.value = subCategories.value;
+    } else {
+      filteredSubCategories.value = subCategories.value
+          .where((subCategory) =>
+              subCategory.name!.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
+  }
+
+  void watchSubCategories() {
     isLoading(true);
-    productSubscription = productItemService
-        .watchAllProducts(selectedSubCategory!.subCategoryId!)
+    subCategorySubscription = subCategoryService
+        .watchAllSubCategories(selectedCategory!.categoryId!)
         .listen((event) {
       isLoading(false);
       event.fold(
         (l) => l.showError(),
-        (r) {
-          products.value = r;
-          filteredProducts.value = r;
+        (r) async {
+          subCategories.value = r;
+          filteredSubCategories.value = r;
         },
       );
     });
   }
 
-  Future<void> fetchProducts() async {
-    if (selectedSubCategory == null) return;
-
-    isLoading(true);
-    final res = await productItemService.findAllProducts(
-      selectedSubCategory!.subCategoryId!,
-    );
-    isLoading(false);
-
-    res.fold(
-      (l) => l.showError(),
-      (r) {
-        products.value = r;
-        filteredProducts.value = r;
-      },
-    );
-  }
-
-  void applySearch(String query) {
-    if (query.isEmpty) {
-      filteredProducts.value = products.value;
-    } else {
-      filteredProducts.value = products.value
-          .where((product) =>
-              product.name?.toLowerCase().contains(query.toLowerCase()) ??
-              false)
-          .toList();
-    }
-  }
-
-  Future<void> refreshProducts() async {
-    await productSubscription?.cancel();
-    watchProducts();
-  }
-
   @override
   void onClose() {
-    productSubscription?.cancel();
+    scrollController.dispose();
     searchController.dispose();
+    subCategorySubscription?.cancel();
     super.onClose();
   }
 }

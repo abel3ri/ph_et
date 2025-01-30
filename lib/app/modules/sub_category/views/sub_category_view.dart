@@ -1,205 +1,235 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
 import 'package:get/get.dart';
-import 'package:pharma_et/core/widgets/badges/r_cart_item_badge.dart';
+import 'package:pharma_et/app/modules/sub_category/controllers/sub_category_controller.dart';
 import 'package:pharma_et/core/widgets/buttons/r_circled_button.dart';
-import 'package:pharma_et/core/widgets/cards/r_item_card.dart';
+import 'package:pharma_et/core/widgets/cards/r_card.dart';
 import 'package:pharma_et/core/widgets/indicators/r_loading.dart';
 import 'package:pharma_et/core/widgets/indicators/r_not_found.dart';
+import 'package:pharma_et/core/widgets/placeholders/r_circled_image_avatar.dart';
 import 'package:pharma_et/core/widgets/shimmers/grids/r_item_card_shimmer_grid.dart';
 import 'package:pharma_et/core/widgets/sliders/r_carousel_slider.dart';
 import 'package:pharma_et/core/widgets/text_fields/r_styled_search_input_field.dart';
-
-import '../controllers/sub_category_controller.dart';
+import 'package:readmore/readmore.dart';
 
 class SubCategoryView extends GetView<SubCategoryController> {
   const SubCategoryView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        surfaceTintColor: Colors.transparent,
-        leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: const Icon(
-            Icons.arrow_back_ios_new_rounded,
-            size: 28,
-          ),
-        ),
-        title: Text(
-          '${controller.selectedSubCategory?.name}',
-          style: context.textTheme.titleMedium,
-        ),
-        centerTitle: true,
-        actions: [
-          GestureDetector(
-            onTap: () {
-              Get.toNamed("/cart", arguments: {
-                "hasPreviousPage": true,
-              });
-            },
-            child: const RCartItemBadge(),
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () => Future.sync(() => controller.fetchProducts()),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          physics: const AlwaysScrollableScrollPhysics(
-            parent: BouncingScrollPhysics(),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+      body: CustomScrollView(
+        controller: controller.scrollController,
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            expandedHeight: Get.height * 0.3,
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            pinned: true,
+            stretch: true,
+            surfaceTintColor: Colors.transparent,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Stack(
+                fit: StackFit.expand,
                 children: [
-                  Expanded(
-                    child: RStyledSearchBar(
-                      hintText: "Search products...",
-                      searchController: controller.searchController,
-                      onSubmitted: (value) {
-                        controller.applySearch(value);
-                      },
-                      onClear: () {
-                        controller.searchController.clear();
-                        controller.applySearch("");
+                  CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    imageUrl:
+                        controller.selectedCategory?.imageUrl?['url'] ?? "",
+                    errorWidget: (context, url, error) => const Center(
+                      child: Icon(
+                        Icons.error,
+                        size: 32,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.black.withOpacity(0.5),
+                          Colors.transparent,
+                        ],
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 32,
+                    left: 16,
+                    child: RCircledButton.large(
+                      icon: Icons.arrow_back,
+                      onTap: () {
+                        Get.back();
                       },
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: Get.height * 0.02),
-              Obx(
-                () {
-                  if (controller.homeController.isAdLoading.isTrue) {
-                    return const Center(
-                      child: RLoading(),
+            ),
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                    horizontal: 16,
+                  ),
+                  child: Obx(() {
+                    final isScrolled = controller.scrollOffset.value > 100;
+                    return Text(
+                      "${controller.selectedCategory?.name}",
+                      style: context.textTheme.titleLarge?.copyWith(
+                        color: Get.isDarkMode
+                            ? Colors.white
+                            : isScrolled
+                                ? Colors.black
+                                : Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
                     );
-                  }
-                  if (controller.homeController.ads.value.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: RCarouselSlider(
-                      ads: controller.homeController.ads.value,
-                      onPageChanged: (index, reason) => controller
-                          .homeController.currentDynamicAdIndex.value = index,
-                      currentIndex:
-                          controller.homeController.currentDynamicAdIndex,
+                  }),
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: ReadMoreText(
+                '${controller.selectedCategory?.description}',
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: Obx(
+              () {
+                if (controller.isLoading.isTrue) {
+                  return const SliverToBoxAdapter(
+                    child: RItemCardShimmerGrid(),
+                  );
+                }
+
+                if (controller.subCategories.value.isEmpty) {
+                  return const SliverToBoxAdapter(
+                    child: RNotFound(
+                      message: "No sub category found!",
                     ),
                   );
-                },
-              ),
-              SizedBox(height: Get.height * 0.02),
-              Obx(
-                () {
-                  if (controller.isLoading.isTrue) {
-                    return const RItemCardShimmerGrid();
-                  }
-                  if (controller.filteredProducts.value.isEmpty) {
-                    return const RNotFound(
-                      message: "No Product Found!",
-                    );
-                  }
-                  return MasonryGridView.builder(
-                    mainAxisSpacing: 16,
-                    shrinkWrap: true,
-                    crossAxisSpacing: 8,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: controller.filteredProducts.value.length,
-                    gridDelegate:
-                        const SliverSimpleGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    itemBuilder: (context, index) {
-                      final product = controller.filteredProducts.value[index];
-                      return RItemCard(
-                        onTap: () {
-                          Get.toNamed("/product-details", arguments: {
-                            "productId": product.productId,
-                          });
-                        },
-                        imageUrl: product.images?.first['url'],
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${product.name}',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: context.textTheme.titleSmall,
+                }
+                return SliverList.separated(
+                  itemCount: controller.filteredSubCategories.value.length + 2,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      // Search Bar
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: RStyledSearchBar(
+                              hintText: "Search categories...",
+                              searchController: controller.searchController,
+                              onSubmitted: (value) {
+                                controller.applySearch(value);
+                              },
+                              onClear: () {
+                                controller.searchController.clear();
+                                controller.applySearch("");
+                              },
                             ),
-                            SizedBox(height: Get.height * 0.01),
-                            Row(
-                              children: [
-                                Text(
-                                  "${product.averageRating?.toStringAsFixed(1)}",
-                                  style: context.textTheme.titleLarge,
-                                ),
-                                Icon(
-                                  Icons.star_rounded,
-                                  color: Get.theme.primaryColor,
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    "(${product.totalRatings ?? 0} reviews)",
-                                    style: context.textTheme.bodySmall,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: Get.height * 0.01),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text.rich(
-                                  TextSpan(text: "ETB ", children: [
-                                    TextSpan(
-                                      text: product.price ?? "",
-                                      style: context.textTheme.titleMedium,
-                                    )
-                                  ]),
-                                ),
-                                Obx(
-                                  () {
-                                    final bool isInCart = controller
-                                        .cartController.cartItems.value
-                                        .any((prod) =>
-                                            prod.productId ==
-                                            product.productId);
+                          ),
+                        ],
+                      );
+                    }
 
-                                    return RCircledButton.medium(
-                                      icon: isInCart ? Icons.remove : Icons.add,
-                                      onTap: () {
-                                        if (isInCart) {
-                                          controller.cartController
-                                              .removeItemFromCart(product);
-                                        } else {
-                                          controller.cartController
-                                              .addToCart(product);
-                                        }
-                                      },
-                                    );
-                                  },
-                                ),
-                              ],
+                    if (index ==
+                        (controller.filteredSubCategories.value.length ~/ 2) +
+                            1) {
+                      return Obx(
+                        () {
+                          if (controller.homeController.isAdLoading.isTrue) {
+                            return const Center(
+                              child: RLoading(),
+                            );
+                          }
+                          if (controller.homeController.ads.value.isEmpty) {
+                            return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: RCarouselSlider(
+                              ads: controller.homeController.ads.value,
+                              onPageChanged: (index, reason) => controller
+                                  .homeController
+                                  .currentDynamicAdIndex
+                                  .value = index,
+                              currentIndex: controller
+                                  .homeController.currentDynamicAdIndex,
+                            ),
+                          );
+                        },
+                      );
+                    }
+
+                    final adjustedIndex = index >
+                            (controller.filteredSubCategories.value.length ~/
+                                    2) +
+                                1
+                        ? index - 2
+                        : index - 1;
+
+                    final subCategory =
+                        controller.filteredSubCategories.value[adjustedIndex];
+                    return GestureDetector(
+                      onTap: () {
+                        Get.toNamed("/products", arguments: {
+                          "subCategory": subCategory,
+                        });
+                      },
+                      child: RCard(
+                        child: Row(
+                          children: [
+                            RCircledImageAvatar.medium(
+                              fallBackText: "Image",
+                              imageUrl: subCategory.imageUrl?['url'],
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${subCategory.name}",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: context.textTheme.titleMedium,
+                                  ),
+                                  Text(
+                                    "${subCategory.productCount ?? "N/A"} Product(s)",
+                                    style: context.textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            const RCircledButton.medium(
+                              icon: Icons.arrow_right_alt_outlined,
                             ),
                           ],
                         ),
-                      );
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) =>
+                      SizedBox(height: Get.height * 0.02),
+                );
+              },
+            ),
+          )
+        ],
       ),
     );
   }

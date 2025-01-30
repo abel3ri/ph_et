@@ -16,8 +16,8 @@ abstract class Routes {
   static const AUTH = _Paths.AUTH;
   static const IMAGE_PICKER = _Paths.IMAGE_PICKER;
   static const HOME_WRAPPER = _Paths.HOME_WRAPPER;
-  static const CATEGORY = _Paths.CATEGORY;
   static const SUB_CATEGORY = _Paths.SUB_CATEGORY;
+  static const PRODUCTS = _Paths.PRODUCTS;
   static const CART = _Paths.CART;
   static const POLICIES_AND_SUPPORT = _Paths.POLICIES_AND_SUPPORT;
   static const HELP_AND_SUPPORT = _Paths.HELP_AND_SUPPORT;
@@ -49,8 +49,8 @@ abstract class _Paths {
   static const AUTH = '/auth';
   static const IMAGE_PICKER = '/image-picker';
   static const HOME_WRAPPER = '/home-wrapper';
-  static const CATEGORY = '/category';
   static const SUB_CATEGORY = '/sub-category';
+  static const PRODUCTS = '/products';
   static const CART = '/cart';
   static const POLICIES_AND_SUPPORT = '/policies-and-support';
   static const HELP_AND_SUPPORT = '/help-and-support';
